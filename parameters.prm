@@ -1,0 +1,73 @@
+subsection ErrorHandler
+  set Compute error            = true
+  set Error file format        = tex
+  set Error precision          = 3
+  set Output error tables      = true
+  set Solution names           = u
+  set Solution names for latex = u
+  set Table names              = error
+  set Write error files        = false
+  subsection Table 0
+    set Add convergence rates          = true
+    set Extra terms                    = cells,dofs
+    set Latex table caption            = error
+    set List of error norms to compute = Linfty, L2, H1
+    set Rate key                       = 
+  end
+end
+
+subsection Exact solution
+  set Function constants  =   
+  set Function expression = (-10*x^2 - 10*y^2 + 10)*(x^2 + y^2 - 0.25)*sin(x)*cos(y)
+  set Variable names      = x,y,t
+end
+
+
+subsection Forcing term
+  set Function constants  = 
+  set Function expression = 80*x^2*sin(x)*cos(y) - 4*x*(-10*x^2 - 10*y^2 + 10)*cos(x)*cos(y) + 40*x*(x^2 + y^2 - 0.25)*cos(x)*cos(y) + 80*y^2*sin(x)*cos(y) + 4*y*(-10*x^2 - 10*y^2 + 10)*sin(x)*sin(y) - 40*y*(x^2 + y^2 - 0.25)*sin(x)*sin(y) + 2*(-10*x^2 - 10*y^2 + 10)*(x^2 + y^2 - 0.25)*sin(x)*cos(y) - 4*(-10*x^2 - 10*y^2 + 10)*sin(x)*cos(y) + 40*(x^2 + y^2 - 0.25)*sin(x)*cos(y)
+  set Variable names      = x,y,t
+end
+
+
+subsection LaplaceProblem
+  set n cells                     = 4
+  set Refinements                 = 7
+
+  # Available options:
+  # none:       No manifold is used
+  # boundary:   Manifold ids are used on the boundary
+  # everywhere: Manifold ids are used in all the domain
+  set Use Manifold IDs            = boundary
+  
+  # Available options:
+  # MappingQ:        Use MappingQ
+  # MappingManifold: Use MappingManifold
+  set Mapping                     = MappingQ
+
+  # Mapping - Polynomial degree
+  set Mapping - Polynomial degree = 1
+
+
+
+end
+
+subsection ParsedDataOut
+  set Output format                  = vtk
+  set Output partitioning            = false
+  set Problem base name              = solution
+  set Solution names                 = u
+  set Subdivisions                   = 1
+end
+subsection ParsedFiniteElement
+  set Blocking of the finite element = u
+  set Finite element space           = FE_Q(2)
+end
+subsection ParsedQuadrature
+  set Number of repetitions  = 3
+  set Quadrature order       = 1
+  # Quadrature rule:gauss|midpoint|milne|simpson|trapez|weddle
+  set Quadrature to generate = gauss
+end
+
+
