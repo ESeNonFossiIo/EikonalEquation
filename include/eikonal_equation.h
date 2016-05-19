@@ -1,5 +1,5 @@
-#ifndef _laplace_problem_h
-#define _laplace_problem_h
+#ifndef _eikonal_equation_h
+#define _eikonal_equation_h
 
 #include <deal.II/lac/dynamic_sparsity_pattern.h>
 #include <deal.II/lac/vector.h>
@@ -8,20 +8,24 @@
 
 #include <deal2lkit/parameter_acceptor.h>
 
+#include <deal2lkit/parsed_grid_refinement.h>
 #include <deal2lkit/parsed_finite_element.h>
 #include <deal2lkit/parsed_quadrature.h>
 
 #include <deal2lkit/parsed_function.h>
+#include <deal2lkit/parsed_grid_generator.h>
+#include <deal2lkit/parsed_dirichlet_bcs.h>
+
 #include <deal2lkit/parsed_data_out.h>
 #include <deal2lkit/error_handler.h>
 
 using namespace dealii;
 using namespace deal2lkit;
 
-class LaplaceProblem  : public ParameterAcceptor
+class EikonalEquation  : public ParameterAcceptor
 {
 public:
-  LaplaceProblem ();
+  EikonalEquation ();
 
   void run ();
 
@@ -40,6 +44,9 @@ private:
   // Finite Element:
   ParsedFiniteElement<2>      pfe;
   FiniteElement<2>            *fe;
+  ParsedGridGenerator<2>      pgg;
+  ParsedDirichletBCs<2>       pdbc;
+  ParsedGridRefinement        pgr;
 
   // Quadrature:
   ParsedQuadrature<2>         pq;
@@ -51,6 +58,7 @@ private:
   SparseMatrix<double>        system_matrix;
 
   Vector<double>              solution;
+  Vector<double>              old_solution;
   Vector<double>              system_rhs;
 
   ConstraintMatrix            constraints;
@@ -96,6 +104,11 @@ private:
    */
   bool use_mapping_q_on_all_cells;
 
+  double epsilon;
+  double epsilon_decrement;
+  double alpha;
+  double norm_tolerance;
+  double norm;
   // Output:
   mutable ParsedDataOut<2>    pout;
   mutable ErrorHandler<1>     eh;

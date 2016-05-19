@@ -1,45 +1,6 @@
-subsection ErrorHandler
-  set Compute error            = true
-  set Error file format        = tex
-  set Error precision          = 3
-  set Output error tables      = true
-  set Solution names           = u
-  set Solution names for latex = u
-  set Table names              = error
-  set Write error files        = false
-  subsection Table 0
-    set Add convergence rates          = true
-    set Extra terms                    = cells,dofs
-    set Latex table caption            = error
-    set List of error norms to compute = Linfty, L2, H1
-    set Rate key                       = 
-  end
-end
-
-subsection Exact solution
-  set Function constants  =   
-  set Function expression = (-10*x^2 - 10*y^2 + 10)*(x^2 + y^2 - 0.25)*sin(x)*cos(y)
-  set Variable names      = x,y,t
-end
-
-
-subsection Forcing term
-  set Function constants  = 
-  set Function expression = 80*x^2*sin(x)*cos(y) - 4*x*(-10*x^2 - 10*y^2 + 10)*cos(x)*cos(y) + 40*x*(x^2 + y^2 - 0.25)*cos(x)*cos(y) + 80*y^2*sin(x)*cos(y) + 4*y*(-10*x^2 - 10*y^2 + 10)*sin(x)*sin(y) - 40*y*(x^2 + y^2 - 0.25)*sin(x)*sin(y) + 2*(-10*x^2 - 10*y^2 + 10)*(x^2 + y^2 - 0.25)*sin(x)*cos(y) - 4*(-10*x^2 - 10*y^2 + 10)*sin(x)*cos(y) + 40*(x^2 + y^2 - 0.25)*sin(x)*cos(y)
-  set Variable names      = x,y,t
-end
-
-
-subsection LaplaceProblem
-  set n cells                     = 4
-  set Refinements                 = 7
-
-  # Available options:
-  # none:       No manifold is used
-  # boundary:   Manifold ids are used on the boundary
-  # everywhere: Manifold ids are used in all the domain
-  set Use Manifold IDs            = boundary
-  
+# Listing of Parameters
+# ---------------------
+subsection EikonalEquation
   # Available options:
   # MappingQ:        Use MappingQ
   # MappingManifold: Use MappingManifold
@@ -48,26 +9,128 @@ subsection LaplaceProblem
   # Mapping - Polynomial degree
   set Mapping - Polynomial degree = 1
 
+  # Mapping - Use Mapping q on all cells
+  set Mapping - all cells         = false
 
+  # Number of refiniments
+  set Number of cycles            = 10
+
+  # Number of refiniments
+  set Refinements                 = 2
+
+  # Available options:
+  # none:       No manifold is used
+  # boundary:   Manifold ids are used on the boundary
+  # everywhere: Manifold ids are used in all the domain
+  set Use Manifold IDs            = none
+
+  # The number n_cells of elements for this initial triangulation
+  set n cells                     = 10
+
+  set Norm Tolerance              = 1e-3
+  set Alpha                       = 5.0
+
+  set Epsilon Decrement           = 5.0e-2
+  set Epsilon                     = 1.0e-1
+  #-1.0e-4
+end
+
+
+subsection ErrorHandler
+  set Compute error            = false
+  set Error file format        = tex
+  set Error precision          = 3
+  set Output error tables      = true
+  # Comma separated list of names for the components. This will be used both
+  # for error tables in text format and to output the solution to a file. Note
+  # that in the case of a vector function the error name which is used to
+  # compute the norm (supposing the type of the other components is 'Add') is
+  # the first one.
+  set Solution names           = u
+
+  # Comma separated version of the same thing as above for the latex version
+  # of the table.
+  set Solution names for latex = u
+
+  # Comma separated list of table names.
+  set Table names              = error
+  set Write error files        = false
+
+
+  subsection Table 0
+    # Evaluate convergence rates and add a column to the table for each
+    # computed norm.
+    set Add convergence rates          = true
+
+    # The extra columns to add to the table.
+    set Extra terms                    = cells,dofs
+
+    # The caption that will go under the table if we write the file in tex
+    # format. The default value for this object is the same name as the table
+    # name.
+    set Latex table caption            = error
+
+    # Each component is separated by a semicolon, and each norm by a comma.
+    # Implemented norms are Linfty, L2, H1, AddUp, which means that the norm
+    # is added to the previous component, and Custom.
+    set List of error norms to compute = Linfty, L2, H1
+
+    # The key to use to compute the convergence rates.
+    set Rate key                       = 
+  end
 
 end
 
+subsection ParsedDirichletBCs
+  set IDs and component masks = 0=ALL % 1=ALL % 2=ALL
+  set IDs and expressions     = 
+  set Known component names   = u
+  set Used constants          =
+end
+
+subsection Exact solution
+  set Function constants  = 
+  set Function expression = 0
+  set Variable names      = x,y,t
+end
+
+subsection Forcing term
+  set Function constants  = 
+  set Function expression = 1
+  set Variable names      = x,y,t
+end
+
+subsection ParsedFiniteElement
+  set Blocking of the finite element = u
+  set Finite element space           = FE_Q(1)
+end
+
+subsection ParsedGridGenerator
+  set Colorize                      = true
+  set Grid to generate              = rectangle
+  set Optional Point<spacedim> 1    = 0,0
+  set Optional Point<spacedim> 2    = 1,1
+end
+
+
+subsection ParsedQuadrature
+  set Number of repetitions  = 1
+  set Quadrature order       = 4
+  set Quadrature to generate = gauss
+end
+
 subsection ParsedDataOut
-  set Output format                  = vtk
+  set Output format                  = vtu
   set Output partitioning            = false
   set Problem base name              = solution
   set Solution names                 = u
   set Subdivisions                   = 1
 end
-subsection ParsedFiniteElement
-  set Blocking of the finite element = u
-  set Finite element space           = FE_Q(2)
-end
-subsection ParsedQuadrature
-  set Number of repetitions  = 3
-  set Quadrature order       = 1
-  # Quadrature rule:gauss|midpoint|milne|simpson|trapez|weddle
-  set Quadrature to generate = gauss
-end
 
-
+subsection deal2lkit::ParsedGridRefinement
+  set Bottom fraction                        = 0.300000
+  set Maximum number of cells (if available) = 0
+  set Order (optimize)                       = 2
+  set Refinement strategy                    = fraction
+  set Top fraction                           = 0.300000
+end

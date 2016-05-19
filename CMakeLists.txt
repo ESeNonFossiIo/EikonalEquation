@@ -102,5 +102,5 @@ FOREACH(_build_type ${_d2_build_types})
 ENDFOREACH()
 
 ADD_CUSTOM_TARGET(indent ./scripts/indent
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/../
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/
 )
